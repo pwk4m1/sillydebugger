@@ -16,7 +16,7 @@ while longer at least.
 ## What works?
 
 Currently, not a lot. You can single-step through simple 16-bit 
-programs that don't do brancing, and that's about it.
+programs that don't do branching, and that's about it.
 
 ## TODO:
 
