@@ -33,6 +33,8 @@ USER_PROMPT_INPUT:
     resb    70
 USER_PROMPT_PREVIOUS_INPUT:
     resb    70
+UI_ADDR_STEP_CNT:
+    resb    1
 
 ; ------------------------------------------------------------
 ; Cache region related memory and pointers

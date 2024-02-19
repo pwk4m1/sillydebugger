@@ -12,6 +12,9 @@
 ; Handle user provided command
 ; 
 ui_prompt:
+    cmp     byte [UI_ADDR_STEP_CNT], 0
+    jne     .ret_continue_steps
+
     push    ax
     push    dx
     push    edi
@@ -70,7 +73,7 @@ ui_prompt:
         cmp     byte [di], 0x3f         ; ?
         je      .usage
         cmp     byte [di], 0x73         ; s
-        je      .ret
+        je      .step
 
         ; Command not recognized
         jmp     .usage
@@ -83,6 +86,17 @@ ui_prompt:
         mov     di, USER_PROMPT_PREVIOUS_INPUT
         jmp     .do_exec
 
+    ; step single or multiple instructions
+    .step:
+        mov     si, di
+        call    strlen
+        cmp     cx, 3 
+        jne      .ret
+        mov     al, byte [si+2]
+        and     al, 0x0F
+        mov     byte [UI_ADDR_STEP_CNT], al
+        jmp     .ret
+
     .ret:
         pop     ds
         pop     es
@@ -91,6 +105,9 @@ ui_prompt:
         pop     edi
         pop     dx
         pop     ax
+        ret
+    .ret_continue_steps:
+        dec     byte [UI_ADDR_STEP_CNT]
         ret
 
 .usage:
@@ -103,7 +120,8 @@ ui_prompt:
     db "Usage: ", 0x0a, 0x0d
     db "    ?:          Show this help window", 0x0a, 0x0d
     db "    r:          Reset the target program", 0x0a, 0x0d
-    db "    s:          Execute single step of program", 0x0a, 0x0d
+    db "    s:          Execute single step of program OR", 0x0a, 0x0d
+    db "    s <n>:      Execute n steps where n: 1-9", 0x0a, 0x0d
 
     db 0
 

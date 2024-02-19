@@ -67,7 +67,12 @@ vmstart:
     ; Set the initial cache pointer
     ;
     mov     dword [SECONDARY_STACKPTR], SECONDARY_STACKMEM
-   
+
+    ; ------------------------------------------------------------
+    ; Set single step counter to 0
+    ;
+    mov     byte [UI_ADDR_STEP_CNT], 0
+
     ; ------------------------------------------------------------
     ; Init cycle exec counter
     ;
