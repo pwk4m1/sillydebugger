@@ -94,6 +94,7 @@ ui_prompt:
         jne      .ret
         mov     al, byte [si+2]
         and     al, 0x0F
+        dec     al
         mov     byte [UI_ADDR_STEP_CNT], al
         jmp     .ret
 
