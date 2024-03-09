@@ -25,16 +25,10 @@ PRIMARY_REGMEM:
     resb    8 * 4
 BACKUP_STACKPTR:
     resb    4
-CODE_CYCLE_COUNT:
-    resb    2
-SECONDARY_STACKPTR:
-    resb    4
 USER_PROMPT_INPUT:
     resb    70
 USER_PROMPT_PREVIOUS_INPUT:
     resb    70
-UI_ADDR_STEP_CNT:
-    resb    1
 
 ; ------------------------------------------------------------
 ; Cache region related memory and pointers
@@ -58,6 +52,16 @@ absolute 0x08000000
         resb    0xeff
     SECONDARY_STACKMEM:
         resb    0x100
+
+    ; Previous low memory stuff
+    UI_ADDR_STEP_CNT:
+        resb    1
+    SECONDARY_STACKPTR:
+        resb    4
+    CYCLES_EXECUTED:
+        resb    4
+    CODE_CYCLE_COUNT:
+        resb    2
 
 bits    16
 section .text

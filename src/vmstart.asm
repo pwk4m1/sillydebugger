@@ -12,6 +12,8 @@
 ;
 %include "src/memory_map.asm"
 
+bits    16
+
 ; ------------------------------------------------------------
 ; Temporary/test secondary program to execute
 ;
@@ -28,8 +30,6 @@ secondary_program:
     times   16 db 0xf4
 .end:
 SECONDARY_PROGRAM_SIZE equ (secondary_program.end - secondary_program) 
-
-%define CYCLES_EXECUTED 0x100
 
 ; ------------------------------------------------------------
 ; The program to debug has been halted, loop here until
@@ -64,19 +64,24 @@ program_branched:
 ;
 vmstart:
     ; ------------------------------------------------------------
-    ; Set the initial cache pointer
-    ;
-    mov     dword [SECONDARY_STACKPTR], SECONDARY_STACKMEM
-
-    ; ------------------------------------------------------------
     ; Set single step counter to 0
     ;
-    mov     byte [UI_ADDR_STEP_CNT], 0
+    mov     edi, UI_ADDR_STEP_CNT
+    xor     ax, ax
+    stosb
+
+    ; ------------------------------------------------------------
+    ; Set the initial cache pointer
+    ;
+    ; mov     dword [SECONDARY_STACKPTR], SECONDARY_STACKMEM
+    mov     eax, SECONDARY_STACKMEM
+    stosd
 
     ; ------------------------------------------------------------
     ; Init cycle exec counter
     ;
-    mov     word [CYCLES_EXECUTED], 1
+    mov     eax, 1
+    stosd
 
     ; ------------------------------------------------------------
     ; Set segments for relocating code to segment 0
@@ -85,7 +90,7 @@ vmstart:
     mov     ds, ax
     xor     ax, ax
     mov     es, ax
-    mov     word [CODE_CYCLE_COUNT], ax
+    stosw
 
     ; ------------------------------------------------------------
     ; copy secondary code and return trampoline to low memory
@@ -154,7 +159,13 @@ vmstart:
     mov     ebp, SECONDARY_REGPTR - (8 * 4)
     call    ui_prompt
     call    print_registers
-    inc     word [CYCLES_EXECUTED]
+    mov     edi, CYCLES_EXECUTED
+    xchg    esi, edi
+    lodsd
+    inc     eax
+    sub     si, 4
+    xchg    edi, esi
+    stosd
 
     ; ------------------------------------------------------------
     ; Restore secondary register values off cache and

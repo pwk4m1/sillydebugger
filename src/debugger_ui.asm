@@ -180,7 +180,10 @@ print_registers:
     ;
     mov     si, .msg_cycle_count
     call    serial_print
-    mov     ax, word [CYCLES_EXECUTED]
+    push    esi
+    mov     esi, CYCLES_EXECUTED
+    lodsw
+    pop     esi
     call    serial_printh
 
     ; ------------------------------------------------------------
