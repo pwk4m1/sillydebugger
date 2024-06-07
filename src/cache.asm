@@ -50,6 +50,11 @@
 	mov 	ecx, (CACHE_AS_RAM_SIZE / 2)
 	rep 	lodsw
 
+    ; Change to no-fill mode
+    mov     eax, cr0
+    or      eax, 0x40000000
+    mov     cr0, eax
+
 	; clear cache memory region
 	xor 	ax, ax
 	mov 	edi, CACHE_AS_RAM_BASE
